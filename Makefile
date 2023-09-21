@@ -52,10 +52,14 @@ $(LIB_TARGET): $(LIB_OBJECTS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@
 
+$(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@ -Ithirdparty
+
 test: $(TEST_TARGET)
+	./$(TEST_TARGET)
 
 $(TEST_TARGET): $(TEST_OBJECTS) $(LIB_TARGET)
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) $^ -o $@ $(LDFLAGS) -Ithirdparty
 
 clean:
 	$(RM) -rf $(BIN_DIR)
