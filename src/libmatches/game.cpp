@@ -47,7 +47,8 @@ void MatchesGame::play()
     }
 }
 
-void MatchesGame::takeMatches(int count) {
+void MatchesGame::takeMatches(int count)
+{
     matchesLeft -= count;
 }
 
