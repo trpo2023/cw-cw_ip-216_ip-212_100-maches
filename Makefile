@@ -55,7 +55,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@ -Ithirdparty
 
-test: $(TEST_TARGET)
+test: prepare $(TEST_TARGET)
 	./$(TEST_TARGET)
 
 $(TEST_TARGET): $(TEST_OBJECTS) $(LIB_TARGET)
