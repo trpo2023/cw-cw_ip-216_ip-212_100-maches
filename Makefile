@@ -15,41 +15,42 @@ APP_NAME = matches
 LIB_NAME = libmatches
 APP_TEST_NAME = matchestest
 
-# Source files
-APP_SOURCES = $(shell find $(SRC_DIR)/$(APP_NAME) -name '*.$(SRC_EXT)')
-LIB_SOURCES = $(shell find $(SRC_DIR)/$(LIB_NAME) -name '*.$(SRC_EXT)')
-TEST_SOURCES = $(shell find $(TEST_DIR) -name '*.$(SRC_EXT)')
-MAIN_SOURCE = src/matches/main.cpp
+# Source files using wildcard
+#APP_SOURCES := $(wildcard $(SRC_DIR)/$(APP_NAME)/*.cpp)
+LIB_SOURCES := $(wildcard $(SRC_DIR)/$(LIB_NAME)/*.cpp)
+TEST_SOURCES := $(wildcard $(TEST_DIR)/*.cpp)
+MAIN_SOURCE := src/matches/main.cpp
+
 # Object files
 APP_OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(APP_SOURCES))
 LIB_OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(LIB_SOURCES))
 TEST_OBJECTS = $(patsubst $(TEST_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(TEST_SOURCES))
-
-# Include directories
-INCLUDE_DIRS = -I$(SRC_DIR)/$(APP_NAME) -I$(SRC_DIR)/$(LIB_NAME) -Ithirdparty
 
 # Targets
 APP_TARGET = $(BIN_DIR)/$(APP_NAME)
 LIB_TARGET = $(LIB_DIR)/$(LIB_NAME).a
 TEST_TARGET = $(BIN_DIR)/$(APP_TEST_NAME)
 
+# Include directories
+INCLUDE_DIRS = -I$(SRC_DIR) -L$(LIB_DIR) -lmatches
+
 # Phony targets
-.PHONY: all clean test run
+.PHONY: all clean test run format
 
 # Default target
 all: prepare $(APP_TARGET)
 
 prepare:
-	mkdir -p $(BIN_DIR) $(OBJ_DIR) $(LIB_DIR)
+	mkdir -p $(BIN_DIR) $(OBJ_DIR)/matches $(OBJ_DIR)/libmatches $(LIB_DIR)
 
 $(APP_TARGET): $(MAIN_SOURCE) $(APP_OBJECTS) $(LIB_TARGET)
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $^ $(INCLUDE_DIRS) -o $@ $(LDFLAGS)
 
 $(LIB_TARGET): $(LIB_OBJECTS)
 	ar rcs $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -MMD -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@
 
 test: $(TEST_TARGET)
 
@@ -61,5 +62,6 @@ clean:
 
 run: prepare $(APP_TARGET)
 	./$(APP_TARGET)
-# Include dependency files
--include $(OBJ_DIR)/*.d
+
+format:
+	find . -iname '*.cpp' -o -iname '*.h' | xargs clang-format -i
