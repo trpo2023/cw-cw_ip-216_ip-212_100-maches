@@ -1,15 +1,33 @@
 #include <ctest.h>
+#include <libmatches/game.h>
 
-CTEST(arithmetic_suite, simple_sum)
-{
-    // Given
-    const int a = 1;
-    const int b = 2;
+CTEST(MatchesGameSuite, MatchesCountInit) {
+    MatchesGame game(20);
+    ASSERT_EQUAL(20, game.matchesLeft);
+}
 
-    // When
-    const int result = 3;
+CTEST(MatchesGameSuite, MatchesTake) {
+    MatchesGame game(10);
+    game.takeMatches(9);
+    ASSERT_EQUAL(1, game.matchesLeft); 
+}
 
-    // Then
-    const int expected = 3;
-    ASSERT_EQUAL(expected, result);
+CTEST(MatchesGameSuite, MatchesTakeMultiple) {
+    MatchesGame game(20);
+    game.takeMatches(9);
+    ASSERT_EQUAL(11, game.matchesLeft); 
+    game.takeMatches(5);
+    ASSERT_EQUAL(6, game.matchesLeft); 
+    game.takeMatches(6);
+    ASSERT_EQUAL(0, game.matchesLeft); 
+}
+
+
+CTEST(MatchesGameSuite, SwitchPlayer) {
+    MatchesGame game(20);
+    ASSERT_EQUAL(true, game.player1Turn); 
+    game.switchPlayer();
+    ASSERT_EQUAL(false, game.player1Turn);
+    game.switchPlayer();
+    ASSERT_EQUAL(true, game.player1Turn);  
 }

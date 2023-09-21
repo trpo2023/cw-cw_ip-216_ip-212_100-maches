@@ -17,4 +17,5 @@ public:
     int getPlayerMove();
     int getComputerMove();
     void switchPlayer();
+    void takeMatches(int count);
 };

@@ -33,7 +33,7 @@ void MatchesGame::play()
                     << "Invalid move. You must remove between 1 and 10 matches."
                     << std::endl;
         } else {
-            matchesLeft -= move;
+            takeMatches(20);
             switchPlayer();
         }
     }
@@ -45,6 +45,10 @@ void MatchesGame::play()
     } else {
         std::cout << "Player 2 (Computer) wins!" << std::endl;
     }
+}
+
+void MatchesGame::takeMatches(int count) {
+    matchesLeft -= count;
 }
 
 void MatchesGame::displayMatches()
